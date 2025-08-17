@@ -40,12 +40,26 @@ const categoriesMap: Record<string, string> = {
   // Cultura: teatro, galerías, centros de arte, museos y templos
   cultura:
     'entertainment.culture.theatre,entertainment.culture.gallery,entertainment.culture.arts_centre,entertainment.museum,religion.place_of_worship',
+  // Compras: centros comerciales, mercados, supermercados, souvenirs
+  compras:
+    'commercial.shopping_mall,commercial.marketplace,commercial.department_store,commercial.supermarket,commercial.gift_and_souvenir',
+  // Vida nocturna: nightclubs, casinos, pubs, bares, taprooms, biergarten
+  vida_nocturna: 'adult.nightclub,adult.casino,catering.pub,catering.bar,catering.taproom,catering.biergarten',
+  // Playas y costero: playas, resorts, faros, muelles, miradores costeros
+  playas: 'beach,beach.beach_resort,tourism.sights.lighthouse,man_made.pier,tourism.attraction.viewpoint',
+  // Naturaleza: áreas protegidas, picos, manantiales, parques nacionales, reservas
+  naturaleza: 'natural.protected_area,natural.mountain.peak,natural.water.spring,national_park,leisure.park.nature_reserve',
+  // Deportes: polideportivos, canchas, piscinas, pistas, gimnasios
+  deportes: 'sport.sports_centre,sport.pitch,sport.swimming_pool,sport.track,sport.fitness.fitness_centre',
 }
 
-export async function fetchPlacesByCategory(cat: string): Promise<Place[]> {
+export async function fetchPlacesByCategory(
+  cat: string,
+  center: { lon: number; lat: number },
+  radius: number
+): Promise<Place[]> {
   const categories = categoriesMap[cat] ?? 'catering.restaurant'
-  // Centro aproximado: Valencia (Carabobo). Radio aumentado a 60km para incluir Puerto Cabello.
-  const lon = -68.0, lat = 10.166, radius = 60000
+  const { lon, lat } = center
   const apiKey = import.meta.env.VITE_GEOAPIFY_KEY
   if (!apiKey) {
     throw new Error('Falta VITE_GEOAPIFY_KEY en .env')

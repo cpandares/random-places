@@ -254,4 +254,25 @@
 		"description": "Biblioteca y actividades comunitarias.",
 		"address": "Bejuma"
 	}
+		,
+
+		{ "id": "compras-1", "name": "C.C. Sambil Valencia", "category": "compras", "city": "Valencia", "description": "Centro comercial con tiendas y entretenimiento.", "address": "Av. 4 de Mayo" },
+		{ "id": "compras-2", "name": "Mercado Municipal", "category": "compras", "city": "Valencia", "description": "Puestos de frutas, vegetales y artesanías.", "address": "Centro de Valencia" },
+		{ "id": "compras-3", "name": "Bazar Souvenirs", "category": "compras", "city": "Puerto Cabello", "description": "Regalos y recuerdos locales.", "address": "Malecón" },
+
+		{ "id": "vida_nocturna-1", "name": "Club Nocturno Valencia", "category": "vida_nocturna", "city": "Valencia", "description": "Música y baile hasta tarde.", "address": "Zona Norte" },
+		{ "id": "vida_nocturna-2", "name": "Casino Puerto Cabello", "category": "vida_nocturna", "city": "Puerto Cabello", "description": "Salón de juego y bar.", "address": "Boulevard" },
+		{ "id": "vida_nocturna-3", "name": "Taproom Artesanal", "category": "vida_nocturna", "city": "Naguanagua", "description": "Cervezas artesanales y música en vivo.", "address": "Av. Universidad" },
+
+		{ "id": "playas-1", "name": "Playa Quizandal", "category": "playas", "city": "Puerto Cabello", "description": "Playa con servicios.", "address": "Vía a Isla Larga" },
+		{ "id": "playas-2", "name": "Muelle Turístico", "category": "playas", "city": "Puerto Cabello", "description": "Paseo costero y mirador.", "address": "Malecón" },
+		{ "id": "playas-3", "name": "Faro de la Bahía", "category": "playas", "city": "Puerto Cabello", "description": "Vista panorámica del litoral.", "address": "Bahía" },
+
+		{ "id": "naturaleza-1", "name": "Reserva Natural Local", "category": "naturaleza", "city": "Valencia", "description": "Senderos y observación de aves.", "address": "Periferia de Valencia" },
+		{ "id": "naturaleza-2", "name": "Manantial de Trincheras", "category": "naturaleza", "city": "Trincheras", "description": "Aguas termales y entorno natural.", "address": "Trincheras" },
+		{ "id": "naturaleza-3", "name": "Pico Local", "category": "naturaleza", "city": "Bejuma", "description": "Ascenso con vistas del valle.", "address": "Bejuma" },
+
+		{ "id": "deportes-1", "name": "Polideportivo Valencia", "category": "deportes", "city": "Valencia", "description": "Cancha múltiple y pista.", "address": "Valencia" },
+		{ "id": "deportes-2", "name": "Piscina Municipal", "category": "deportes", "city": "San Diego", "description": "Piscina semiolímpica.", "address": "San Diego" },
+		{ "id": "deportes-3", "name": "Gimnasio Fitness Center", "category": "deportes", "city": "Naguanagua", "description": "Área de pesas y cardio.", "address": "Naguanagua" }
 ]

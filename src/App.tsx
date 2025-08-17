@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 import data from './data/random.json'
 import { fetchPlacesByCategory, type Place } from './utils/places'
+import { Dialog, Transition } from '@headlessui/react'
 
 const CATEGORIES: { key: string; label: string }[] = [
   { key: 'cena', label: 'Cena' },
@@ -10,6 +11,22 @@ const CATEGORIES: { key: string; label: string }[] = [
   { key: 'turismo', label: 'Turismo' },
   { key: 'esparcimiento', label: 'Esparcimiento' },
   { key: 'cultura', label: 'Cultura' },
+  { key: 'compras', label: 'Compras' },
+  { key: 'vida_nocturna', label: 'Vida nocturna' },
+  { key: 'playas', label: 'Playas' },
+  { key: 'naturaleza', label: 'Naturaleza' },
+  { key: 'deportes', label: 'Deportes' },
+]
+
+type RegionKey = 'carabobo' | 'cojedes' | 'aragua' | 'miranda' | 'lara' | 'falcon' | 'distrito_capital'
+const REGIONS: { key: RegionKey; label: string; center: { lon: number; lat: number }; radius: number }[] = [
+  { key: 'carabobo', label: 'Carabobo', center: { lon: -68.0, lat: 10.166 }, radius: 60000 },
+  { key: 'cojedes', label: 'Cojedes', center: { lon: -68.33, lat: 9.38 }, radius: 50000 },
+  { key: 'aragua', label: 'Aragua', center: { lon: -67.59, lat: 10.24 }, radius: 60000 },
+  { key: 'miranda', label: 'Miranda', center: { lon: -66.89, lat: 10.34 }, radius: 60000 },
+  { key: 'lara', label: 'Lara', center: { lon: -69.35, lat: 10.07 }, radius: 60000 },
+  { key: 'falcon', label: 'Falcón', center: { lon: -69.93, lat: 11.41 }, radius: 70000 },
+  { key: 'distrito_capital', label: 'Distrito Capital', center: { lon: -66.90, lat: 10.49 }, radius: 50000 },
 ]
 
 function App() {
@@ -20,7 +37,10 @@ function App() {
   const [elapsed, setElapsed] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  // Cache por region+categoria
+  const [region, setRegion] = useState<RegionKey>('carabobo')
   const [remoteCache, setRemoteCache] = useState<Record<string, Place[]>>({})
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
   const intervalRef = useRef<number | null>(null)
   const timerRef = useRef<number | null>(null)
   const stopTimeoutRef = useRef<number | null>(null)
@@ -32,9 +52,10 @@ function App() {
   )
   // Lista de candidatos visibles: si hay error, usar local; si no, usar remoto (puede ser []).
   const candidates = useMemo(() => {
-    const remote = remoteCache[category] ?? []
+    const key = `${region}:${category}`
+    const remote = remoteCache[key] ?? []
     return error ? localFiltered : remote
-  }, [remoteCache, category, localFiltered, error])
+  }, [remoteCache, region, category, localFiltered, error])
 
   const bgByCategory: Record<string, string> = {
     cena: 'from-rose-950 via-rose-900 to-rose-950',
@@ -45,25 +66,27 @@ function App() {
     cultura: 'from-purple-950 via-purple-900 to-purple-950',
   }
 
-  // Reset mínimo cuando cambia la categoría
+  // Reset mínimo cuando cambia la categoría o la región
   useEffect(() => {
     stop()
     setWinner(null)
     setCurrent(null)
     setError(null)
     setLoading(true)
-  }, [category])
+  }, [category, region])
 
   // Cargar remoto si no está en caché; si está, quitar loading.
   useEffect(() => {
-    const cached = remoteCache[category]
+    const key = `${region}:${category}`
+    const cached = remoteCache[key]
     if (cached) {
       setLoading(false)
       return
     }
-    fetchPlacesByCategory(category)
+    const r = REGIONS.find((r) => r.key === region)!
+    fetchPlacesByCategory(category, r.center, r.radius)
       .then((list) => {
-        setRemoteCache((prev) => ({ ...prev, [category]: list }))
+        setRemoteCache((prev) => ({ ...prev, [key]: list }))
         setLoading(false)
       })
       .catch((e: unknown) => {
@@ -71,7 +94,7 @@ function App() {
         setError(msg)
         setLoading(false)
       })
-  }, [category, remoteCache])
+  }, [region, category, remoteCache])
 
   // Fire confetti when we have a winner
   useEffect(() => {
@@ -232,14 +255,35 @@ function App() {
               >
                 Detener
               </button>
+              <button
+                onClick={() => setIsDetailsOpen(true)}
+                disabled={!winner}
+                className="px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+              >
+                Detalles
+              </button>
             </div>
           </div>
 
           {/* List of candidates */}
           <div className="bg-black/30 border border-white/10 rounded-2xl p-6 shadow-2xl">
-            <h3 className="text-lg font-semibold mb-4 text-center">
-              Lugares en {CATEGORIES.find((c) => c.key === category)?.label}
-            </h3>
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <h3 className="text-lg font-semibold text-center flex-1">
+                Lugares en {CATEGORIES.find((c) => c.key === category)?.label}
+              </h3>
+              <div className="shrink-0">
+                <label className="text-sm mr-2 text-slate-300">Región:</label>
+                <select
+                  value={region}
+                  onChange={(e) => setRegion(e.target.value as RegionKey)}
+                  className="bg-slate-900/60 border border-white/10 rounded-md px-2 py-1 text-sm"
+                >
+                  {REGIONS.map((r) => (
+                    <option key={r.key} value={r.key}>{r.label}</option>
+                  ))}
+                </select>
+              </div>
+            </div>
             {loading ? (
               <p className="text-slate-300 text-center">Cargando…</p>
             ) : error ? (
@@ -289,6 +333,61 @@ function App() {
           </div>
         </section>
       </main>
+
+      {/* Modal de detalles del lugar */}
+      <Transition appear show={isDetailsOpen} as={Fragment}>
+        <Dialog as="div" className="relative z-50" onClose={() => setIsDetailsOpen(false)}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100"
+            leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-black/50" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-200" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
+                leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
+              >
+                <Dialog.Panel className="w-full max-w-lg transform overflow-hidden rounded-2xl bg-slate-900 border border-white/10 p-6 text-left align-middle shadow-xl">
+                  <Dialog.Title className="text-lg font-bold mb-1">{winner?.name}</Dialog.Title>
+                  <p className="text-sm text-slate-300 mb-4">{winner?.city}</p>
+                  {winner?.description && (
+                    <p className="text-sm text-slate-200 mb-4">{winner.description}</p>
+                  )}
+                  {winner?.address && (
+                    <p className="text-sm text-slate-300 mb-4"><span className="font-semibold">Dirección:</span> {winner.address}</p>
+                  )}
+                  {/* Enlace a mapa: intentar con address, si no, con name+city */}
+                  {winner && (
+                    <div className="mt-2 mb-4">
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((winner.address || `${winner.name}, ${winner.city ?? ''}`).trim())}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-2 text-indigo-300 hover:text-indigo-200 underline"
+                      >
+                        Abrir en Google Maps
+                      </a>
+                    </div>
+                  )}
+                  <div className="mt-6 flex justify-end gap-2">
+                    <button
+                      onClick={() => setIsDetailsOpen(false)}
+                      className="px-4 py-2 rounded-md bg-slate-700 hover:bg-slate-600 text-white"
+                    >
+                      Cerrar
+                    </button>
+                  </div>
+                </Dialog.Panel>
+              </Transition.Child>
+            </div>
+          </div>
+        </Dialog>
+      </Transition>
     </div>
   )
 }
