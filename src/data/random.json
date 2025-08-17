@@ -1,0 +1,257 @@
+[
+	{
+		"id": "cena-1",
+		"name": "Restaurante La Viña",
+		"category": "cena",
+		"city": "Valencia",
+		"description": "Cocina internacional con ambiente moderno en la zona norte.",
+		"address": "Av. Bolívar Nte., Valencia",
+		"priceRange": "$$"
+	},
+	{
+		"id": "cena-2",
+		"name": "La Grillera",
+		"category": "cena",
+		"city": "Naguanagua",
+		"description": "Parrillas y cortes a la carta, ideal para cenas en familia.",
+		"address": "Av. Universidad, Naguanagua",
+		"priceRange": "$$"
+	},
+	{
+		"id": "cena-3",
+		"name": "Sushi House El Viñedo",
+		"category": "cena",
+		"city": "Valencia",
+		"description": "Sushi bar con rolls creativos y opciones vegetarianas.",
+		"address": "El Viñedo, Valencia",
+		"priceRange": "$$$"
+	},
+	{
+		"id": "cena-4",
+		"name": "Trattoria Carabobo",
+		"category": "cena",
+		"city": "Valencia",
+		"description": "Pasta fresca artesanal y pizzas al horno.",
+		"address": "Prebo, Valencia",
+		"priceRange": "$$"
+	},
+	{
+		"id": "cena-5",
+		"name": "Arepa Noche",
+		"category": "cena",
+		"city": "San Diego",
+		"description": "Arepería nocturna con rellenos creativos.",
+		"address": "Av. Don Julio Centeno, San Diego",
+		"priceRange": "$"
+	},
+
+	{
+		"id": "aventura-1",
+		"name": "Cascada de Cabriales - Senderismo",
+		"category": "aventura",
+		"city": "Valencia",
+		"description": "Ruta corta de trekking por el parque municipal.",
+		"address": "Parque Fernando Peñalver, Valencia",
+		"difficulty": "Fácil"
+	},
+	{
+		"id": "aventura-2",
+		"name": "Rappel en Trincheras",
+		"category": "aventura",
+		"city": "Trincheras",
+		"description": "Descenso en roca cerca de las termas.",
+		"address": "Sector Las Trincheras",
+		"difficulty": "Media"
+	},
+	{
+		"id": "aventura-3",
+		"name": "Kayak en Playa Sonrisa",
+		"category": "aventura",
+		"city": "Puerto Cabello",
+		"description": "Recorrido costero en kayak con vista a la bahía.",
+		"address": "Bahía de Puerto Cabello",
+		"difficulty": "Fácil"
+	},
+	{
+		"id": "aventura-4",
+		"name": "MTB en San Diego Hills",
+		"category": "aventura",
+		"city": "San Diego",
+		"description": "Circuito de ciclismo de montaña con subidas técnicas.",
+		"address": "Colinas de San Diego",
+		"difficulty": "Alta"
+	},
+	{
+		"id": "aventura-5",
+		"name": "Parapente en Bejuma",
+		"category": "aventura",
+		"city": "Bejuma",
+		"description": "Vuelos biplaza con instructores certificados.",
+		"address": "Laderas de Bejuma",
+		"difficulty": "Media"
+	},
+
+	{
+		"id": "recreacion-1",
+		"name": "Parque Fernando Peñalver",
+		"category": "recreacion",
+		"city": "Valencia",
+		"description": "Amplias áreas verdes para caminar y hacer picnic.",
+		"address": "Av. Fernando Peñalver"
+	},
+	{
+		"id": "recreacion-2",
+		"name": "Parque Negra Hipólita",
+		"category": "recreacion",
+		"city": "Valencia",
+		"description": "Ciclovías, laguna y zonas de esparcimiento.",
+		"address": "Zona Norte, Valencia"
+	},
+	{
+		"id": "recreacion-3",
+		"name": "Centro Acuático San Diego",
+		"category": "recreacion",
+		"city": "San Diego",
+		"description": "Piscinas recreativas para toda la familia.",
+		"address": "San Diego"
+	},
+	{
+		"id": "recreacion-4",
+		"name": "Boulevard Constitución",
+		"category": "recreacion",
+		"city": "Valencia",
+		"description": "Paseo urbano con cafés y heladerías.",
+		"address": "Centro de Valencia"
+	},
+	{
+		"id": "recreacion-5",
+		"name": "Mirador de La Cumaca",
+		"category": "recreacion",
+		"city": "San Diego",
+		"description": "Vista panorámica del valle de Carabobo.",
+		"address": "Vía La Cumaca"
+	},
+
+	{
+		"id": "turismo-1",
+		"name": "Fortín Solano",
+		"category": "turismo",
+		"city": "Puerto Cabello",
+		"description": "Fortaleza colonial con vistas a la bahía.",
+		"address": "Cerro El Vigía"
+	},
+	{
+		"id": "turismo-2",
+		"name": "Casco Histórico de Montalbán",
+		"category": "turismo",
+		"city": "Montalbán",
+		"description": "Arquitectura colonial y plazas tradicionales.",
+		"address": "Centro de Montalbán"
+	},
+	{
+		"id": "turismo-3",
+		"name": "Puerto Cabello - Malecón",
+		"category": "turismo",
+		"city": "Puerto Cabello",
+		"description": "Paseo marítimo con restaurantes y vista al mar.",
+		"address": "Malecón de Puerto Cabello"
+	},
+	{
+		"id": "turismo-4",
+		"name": "Playa Quizandal",
+		"category": "turismo",
+		"city": "Puerto Cabello",
+		"description": "Playa popular con servicios y muelle.",
+		"address": "Vía a Isla Larga"
+	},
+	{
+		"id": "turismo-5",
+		"name": "Campo de Carabobo",
+		"category": "turismo",
+		"city": "Valencia",
+		"description": "Sitio histórico de la Batalla de Carabobo.",
+		"address": "Autopista Valencia-Puerto Cabello"
+	},
+
+	{
+		"id": "esparcimiento-1",
+		"name": "C.C. Vía Venetto",
+		"category": "esparcimiento",
+		"city": "Valencia",
+		"description": "Centro comercial con salas de cine y food court.",
+		"address": "Av. Bolívar Nte."
+	},
+	{
+		"id": "esparcimiento-2",
+		"name": "C.C. Metropolis",
+		"category": "esparcimiento",
+		"city": "Valencia",
+		"description": "Amplia oferta de tiendas y entretenimiento.",
+		"address": "Zona Industrial Norte"
+	},
+	{
+		"id": "esparcimiento-3",
+		"name": "Heladería Artesanal Prebo",
+		"category": "esparcimiento",
+		"city": "Valencia",
+		"description": "Helados artesanales y churros.",
+		"address": "Prebo, Valencia"
+	},
+	{
+		"id": "esparcimiento-4",
+		"name": "Bowling Naguanagua",
+		"category": "esparcimiento",
+		"city": "Naguanagua",
+		"description": "Bolera con música y snacks.",
+		"address": "Naguanagua"
+	},
+	{
+		"id": "esparcimiento-5",
+		"name": "Parque de Trampolines",
+		"category": "esparcimiento",
+		"city": "San Diego",
+		"description": "Área indoor para saltar y jugar.",
+		"address": "San Diego"
+	},
+
+	{
+		"id": "cultura-1",
+		"name": "Teatro Municipal de Valencia",
+		"category": "cultura",
+		"city": "Valencia",
+		"description": "Obras de teatro, danza y música.",
+		"address": "Centro de Valencia"
+	},
+	{
+		"id": "cultura-2",
+		"name": "Museo de Arte Valencia (MUVA)",
+		"category": "cultura",
+		"city": "Valencia",
+		"description": "Exposiciones de arte moderno y contemporáneo.",
+		"address": "Av. Bolívar Nte."
+	},
+	{
+		"id": "cultura-3",
+		"name": "Ateneo de Guacara",
+		"category": "cultura",
+		"city": "Guacara",
+		"description": "Eventos culturales y talleres.",
+		"address": "Centro de Guacara"
+	},
+	{
+		"id": "cultura-4",
+		"name": "Casco Histórico de Valencia",
+		"category": "cultura",
+		"city": "Valencia",
+		"description": "Catedrales, plazas y arquitectura patrimonial.",
+		"address": "Centro de Valencia"
+	},
+	{
+		"id": "cultura-5",
+		"name": "Casa de la Cultura Bejuma",
+		"category": "cultura",
+		"city": "Bejuma",
+		"description": "Biblioteca y actividades comunitarias.",
+		"address": "Bejuma"
+	}
+]
