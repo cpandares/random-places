@@ -1,17 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 import data from './data/random.json'
-
-type Place = {
-  id: string
-  name: string
-  category: string
-  city?: string
-  description?: string
-  address?: string
-  priceRange?: string
-  difficulty?: string
-}
+import { fetchPlacesByCategory, type Place } from './utils/places'
 
 const CATEGORIES: { key: string; label: string }[] = [
   { key: 'cena', label: 'Cena' },
@@ -28,16 +18,23 @@ function App() {
   const [current, setCurrent] = useState<Place | null>(null)
   const [winner, setWinner] = useState<Place | null>(null)
   const [elapsed, setElapsed] = useState(0)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [remoteCache, setRemoteCache] = useState<Record<string, Place[]>>({})
   const intervalRef = useRef<number | null>(null)
   const timerRef = useRef<number | null>(null)
   const stopTimeoutRef = useRef<number | null>(null)
 
   const places = data as Place[]
-
-  const filtered = useMemo(
+  const localFiltered = useMemo(
     () => places.filter((p) => p.category === category),
     [places, category]
   )
+  // Lista de candidatos visibles: si hay error, usar local; si no, usar remoto (puede ser []).
+  const candidates = useMemo(() => {
+    const remote = remoteCache[category] ?? []
+    return error ? localFiltered : remote
+  }, [remoteCache, category, localFiltered, error])
 
   const bgByCategory: Record<string, string> = {
     cena: 'from-rose-950 via-rose-900 to-rose-950',
@@ -48,12 +45,33 @@ function App() {
     cultura: 'from-purple-950 via-purple-900 to-purple-950',
   }
 
+  // Reset mínimo cuando cambia la categoría
   useEffect(() => {
-    // reset state when category changes
     stop()
     setWinner(null)
     setCurrent(null)
+    setError(null)
+    setLoading(true)
   }, [category])
+
+  // Cargar remoto si no está en caché; si está, quitar loading.
+  useEffect(() => {
+    const cached = remoteCache[category]
+    if (cached) {
+      setLoading(false)
+      return
+    }
+    fetchPlacesByCategory(category)
+      .then((list) => {
+        setRemoteCache((prev) => ({ ...prev, [category]: list }))
+        setLoading(false)
+      })
+      .catch((e: unknown) => {
+        const msg = e instanceof Error ? e.message : 'Error al cargar lugares'
+        setError(msg)
+        setLoading(false)
+      })
+  }, [category, remoteCache])
 
   // Fire confetti when we have a winner
   useEffect(() => {
@@ -86,15 +104,16 @@ function App() {
   }, [winner])
 
   const start = () => {
-    if (filtered.length === 0) return
+    if (candidates.length === 0) return
   if (winner) return // locked after winner
+  if (loading) return
     setIsRunning(true)
     setWinner(null)
     setElapsed(0)
 
     intervalRef.current = window.setInterval(() => {
-      const idx = Math.floor(Math.random() * filtered.length)
-      setCurrent(filtered[idx])
+      const idx = Math.floor(Math.random() * candidates.length)
+      setCurrent(candidates[idx])
     }, 120)
 
     const startTs = Date.now()
@@ -105,8 +124,8 @@ function App() {
     // stop after 10 seconds and pick a final winner
     const timeoutId = window.setTimeout(() => {
       stop()
-      const idx = Math.floor(Math.random() * filtered.length)
-      setWinner(filtered[idx])
+  const idx = Math.floor(Math.random() * candidates.length)
+  setWinner(candidates[idx])
     }, 10_000)
     stopTimeoutRef.current = timeoutId
   }
@@ -162,7 +181,13 @@ function App() {
             <div className="flex items-center justify-between mb-4">
               <h2 className="text-xl font-bold">Sorteo</h2>
               <div className="text-sm text-slate-300">
-                {isRunning ? `Tiempo: ${Math.min(10, elapsed)}s` : winner ? '¡Resultado!' : 'Listo'}
+                {isRunning
+                  ? `Tiempo: ${Math.min(10, elapsed)}s`
+                  : loading
+                  ? 'Cargando…'
+                  : winner
+                  ? '¡Resultado!'
+                  : 'Listo'}
               </div>
             </div>
 
@@ -174,7 +199,7 @@ function App() {
                 }
               >
                 <div className="text-2xl sm:text-3xl font-semibold">
-                  {winner?.name || current?.name || '—'}
+                  {winner?.name || current?.name || (loading ? 'Cargando…' : '—')}
                 </div>
                 <div className="text-sm text-slate-300">
                   {winner?.city || current?.city || ''}
@@ -195,7 +220,7 @@ function App() {
             <div className="mt-6 flex gap-3 justify-center">
               <button
                 onClick={start}
-                disabled={isRunning || filtered.length === 0 || !!winner}
+                disabled={isRunning || candidates.length === 0 || !!winner || loading}
                 className="px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-600 disabled:opacity-50 disabled:cursor-not-allowed font-medium shadow"
               >
                 {isRunning ? 'Sorteando…' : 'Iniciar (10s)'}
@@ -215,11 +240,37 @@ function App() {
             <h3 className="text-lg font-semibold mb-4 text-center">
               Lugares en {CATEGORIES.find((c) => c.key === category)?.label}
             </h3>
-            {filtered.length === 0 ? (
+            {loading ? (
+              <p className="text-slate-300 text-center">Cargando…</p>
+            ) : error ? (
+              <div>
+                <p className="text-amber-300 text-center mb-2">Sin conexión a la API. Mostrando datos locales.</p>
+                {localFiltered.length === 0 ? (
+                  <p className="text-slate-300 text-center">No hay lugares para esta categoría.</p>
+                ) : (
+                  <ul className="grid sm:grid-cols-2 gap-3">
+                    {localFiltered.map((p) => (
+                      <li
+                        key={p.id}
+                        className={
+                          'p-3 rounded-lg border transition text-center ' +
+                          (winner?.id === p.id
+                            ? 'border-emerald-400 bg-emerald-500/10'
+                            : 'border-white/10 bg-black/30 hover:bg-black/40')
+                        }
+                      >
+                        <div className="font-medium">{p.name}</div>
+                        <div className="text-xs text-slate-400">{p.city}</div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            ) : candidates.length === 0 ? (
               <p className="text-slate-300 text-center">No hay lugares para esta categoría.</p>
             ) : (
               <ul className="grid sm:grid-cols-2 gap-3">
-                {filtered.map((p) => (
+                {candidates.map((p) => (
                   <li
                     key={p.id}
                     className={
