@@ -64,7 +64,7 @@ export function CandidateList({
         <p className="text-slate-300 text-center">Cargando…</p>
       ) : error ? (
         <div>
-          <p className="text-amber-300 text-center mb-2">Sin conexión a la API. Mostrando datos locales.</p>
+         {/*  <p className="text-amber-300 text-center mb-2">Sin conexión a la API. Mostrando datos locales.</p> */}
           {localFallback.length === 0 ? (
             <p className="text-slate-300 text-center">No hay lugares para esta categoría.</p>
           ) : (

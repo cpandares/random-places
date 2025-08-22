@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import confetti from 'canvas-confetti'
 import data from './data/random.json'
 import { fetchPlacesByCategory, type Place } from './utils/places'
@@ -9,6 +9,7 @@ import { CategoryMenu } from './components/CategoryMenu'
 import { Roller } from './components/Roller'
 import { CandidateList } from './components/CandidateList'
 import { PlaceDetailsModal } from './components/PlaceDetailsModal'
+import { Footer } from './components/Footer'
 
 function App() {
   const [category, setCategory] = useState<string>('cena')
@@ -32,14 +33,23 @@ function App() {
 
   // Roller hook controls current, winner, timers usando candidatos actuales
   const { isRunning, current, winner, elapsed, start, stop, resetWinner } = useRoller(candidates, loading)
+  // Mantener referencias estables a acciones del roller para usar en efectos sin añadirlas como deps
+  const stopRef = useRef(stop)
+  const resetWinnerRef = useRef(resetWinner)
+  useEffect(() => {
+    stopRef.current = stop
+    resetWinnerRef.current = resetWinner
+  }, [stop, resetWinner])
 
   // Reset mínimo cuando cambia la categoría o la región
+  // Nota: no dependemos de stop/resetWinner para evitar re-ejecutar en cada render
+  // por el cambio de identidad de esas funciones (lo que dejaba loading/error en estado incorrecto).
   useEffect(() => {
-    stop()
-    resetWinner()
+    stopRef.current()
+    resetWinnerRef.current()
     setError(null)
     setLoading(true)
-  }, [category, region, stop, resetWinner])
+  }, [category, region])
 
   // Cargar remoto si no está en caché; si está, quitar loading.
   useEffect(() => {
@@ -121,6 +131,7 @@ function App() {
       </main>
 
       <PlaceDetailsModal open={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} place={winner} />
+      <Footer />
     </div>
   )
 }
